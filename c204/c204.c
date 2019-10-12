@@ -78,28 +78,26 @@ void untilLeftPar ( tStack* s, char* postExpr, unsigned* postLen ) {
 void doOperation ( tStack* s, char c, char* postExpr, unsigned* postLen ) {
     char sTop;
 
-    if (! stackEmpty(s)) {
-        stackTop(s, &sTop);
-        if (sTop == '('
-            || ((c == '*' || c == '/') 
-                && (sTop == '+' || sTop == '-'))) {
-            //pokial je na konci zasobniku lava zatvorka alebo
-            //ma vkladana operacia vyssiu prioritu vlozi znak na zasobnik
-            stackPush(s, c);
-        } else {
-            //inak vlozi znak z vrchu zasobnika do vysledneho vyrazu
-            postExpr[*postLen] = sTop;
-            //zvysu delku vysledneho vyrazu a pointer do neho
-            *postLen += 1;
-            stackPop(s);
-            // opakuj pokial sa nepodari vlozit znak na zasobnik
-            doOperation(s, c, postExpr, postLen);
-        }
-
-    } else {
-        //vlozi znak na zasobnik ak ten je prazdny
+    if (stackEmpty(s)) {
         stackPush(s, c);
+        return;
     }
+
+    stackTop(s, &sTop);
+
+    while (sTop != '(' && ( (c != '*' && c != '/') || (sTop != '+' && sTop != '-') )) {
+        postExpr[*postLen] = sTop;
+        *postLen += 1;
+        stackPop(s);
+
+        if (stackEmpty(s)) {
+            break;
+        } else {
+            stackTop(s, &sTop);
+        }
+    }
+
+    stackPush(s, c);
 }
 
 /* 

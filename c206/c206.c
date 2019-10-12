@@ -94,9 +94,7 @@ void DLDisposeList (tDLList *L) {
         free(curElem);
     }
 
-    L->First = NULL;
-    L->Act = NULL;
-    L->Last = NULL;
+    DLInitList(L);
 }
 
 void DLInsertFirst (tDLList *L, int val) {
@@ -113,14 +111,12 @@ void DLInsertFirst (tDLList *L, int val) {
         return;
     }
 
-    tDLElemPtr firstElem = L->First;
-
     newItem->data = val;
     newItem->lptr = NULL;
-    newItem->rptr = firstElem;
+    newItem->rptr = L->First;
 
-    if (firstElem) {
-        firstElem->lptr = newItem;
+    if (L->First) {
+        L->First->lptr = newItem;
     } else {
         L->Last = newItem;
     }
@@ -142,14 +138,12 @@ void DLInsertLast(tDLList *L, int val) {
         return;
     }
 
-    tDLElemPtr lastElem = L->Last;
-
     newItem->data = val;
-    newItem->lptr = lastElem;
+    newItem->lptr = L->Last;
     newItem->rptr = NULL;
 
-    if (lastElem) {
-        lastElem->rptr = newItem;
+    if (L->Last) {
+        L->Last->rptr = newItem;
     } else {
         L->First = newItem;
     }
