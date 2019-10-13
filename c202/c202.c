@@ -85,7 +85,7 @@ int stackFull ( const tStack* s ) {
 **
 ** Funkci implementujte jako jediný příkaz.
 */
-	return s->top == MAX_STACK-1;
+	return s->top == STACK_SIZE-1;
 }
 
 void stackTop ( const tStack* s, char* c ) {
@@ -119,7 +119,7 @@ void stackPop ( tStack* s ) {
 ** 
 */
 	if (! stackEmpty(s)) {
-		s->arr[s->top--] = '\0';
+		s->top--;
 	}
 }
 
@@ -135,7 +135,7 @@ void stackPush ( tStack* s, char c ) {
 	if (stackFull(s)) {
 		stackError(SERR_PUSH);
 	} else {
-		s->arr[++s->top] = c;
+		s->arr[++(s->top)] = c;
 	}
 	  
 }

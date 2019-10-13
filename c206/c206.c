@@ -94,7 +94,8 @@ void DLDisposeList (tDLList *L) {
         free(curElem);
     }
 
-    DLInitList(L);
+    L->Act = NULL;
+    L->Last = NULL;
 }
 
 void DLInsertFirst (tDLList *L, int val) {
@@ -111,10 +112,12 @@ void DLInsertFirst (tDLList *L, int val) {
         return;
     }
 
+    // nastaví hodnoty nového prvku
     newItem->data = val;
     newItem->lptr = NULL;
     newItem->rptr = L->First;
 
+    // nastaví hodnoty v zozname
     if (L->First) {
         L->First->lptr = newItem;
     } else {
@@ -130,7 +133,7 @@ void DLInsertLast(tDLList *L, int val) {
 ** V případě, že není dostatek paměti pro nový prvek při operaci malloc,
 ** volá funkci DLError().
 **/
-
+// nastaví hodnoty v zozname
     tDLElemPtr newItem = malloc(sizeof(struct tDLElem));
 
 	if (newItem == NULL) {
@@ -138,15 +141,18 @@ void DLInsertLast(tDLList *L, int val) {
         return;
     }
 
+    // nastaví hodnoty nového prvku
     newItem->data = val;
     newItem->lptr = L->Last;
     newItem->rptr = NULL;
 
+    // nastaví hodnoty v zozname
     if (L->Last) {
         L->Last->rptr = newItem;
     } else {
         L->First = newItem;
     }
+
     L->Last = newItem;
 }
 
@@ -207,10 +213,12 @@ void DLDeleteFirst (tDLList *L) {
     tDLElemPtr firstElem;
 
 	if ((firstElem = L->First) != NULL) {
+        // ak je prvý prvek aktívny, zruší aktivitu
         if (L->Act == firstElem) {
             L->Act = NULL;
         }
 
+        // ak je posledný, zruší ukazateľ na posledný prvek
         if (L->Last == firstElem) {
             L->Last = NULL;
         } else {
@@ -231,10 +239,12 @@ void DLDeleteLast (tDLList *L) {
     tDLElemPtr lastElem;
 
 	if ((lastElem = L->Last) != NULL) {
+        // ak je  posledný prvek aktívny, zruší aktivitu
         if (L->Act == lastElem) {
             L->Act = NULL;
         }
 
+        // ak je prvý, zruší ukazateľ na prvý prvek
         if (L->First == lastElem) {
             L->First = NULL;
         } else {
@@ -256,6 +266,7 @@ void DLPostDelete (tDLList *L) {
 	if (L->Act != NULL && L->Act != L->Last && L->Act->rptr != NULL) {
         tDLElemPtr postElem = L->Act->rptr;
 
+        // ak ruší posledný prvek, aktívny prvek bude zároveň posledný
         if(postElem == L->Last) {
             L->Last = L->Act;
             L->Act->rptr = NULL;
@@ -278,12 +289,13 @@ void DLPreDelete (tDLList *L) {
 	if (L->Act != NULL && L->Act != L->First && L->Act->lptr != NULL) {
         tDLElemPtr preElem = L->Act->lptr;
 
+        // ak ruší prvý prvek, aktívny prvek bude zároveň prvý
         if(preElem == L->First) {
             L->First = L->Act;
-            L->Act->rptr = NULL;
+            L->Act->lptr = NULL;
         } else {
-            preElem->rptr->lptr = L->Act;
-            L->Act->rptr = preElem->rptr;
+            preElem->lptr->rptr = L->Act;
+            L->Act->lptr = preElem->lptr;
         }
 
         free(preElem);
@@ -305,16 +317,20 @@ void DLPostInsert (tDLList *L, int val) {
         return;
     }
 
-    if (L->Act) {
-        L->Act->rptr = newElem;
-        newElem->lptr = L->Act;
+    newElem->data = val;
 
+    if (L->Act) {
         if (L->Act == L->Last) {
             L->Last = newElem;
         } else {
+            // nový prvek pôjde medzi aktívny prvek a prvek za aktívnym prvkem
             newElem->rptr = L->Act->rptr;
             L->Act->rptr->lptr = newElem;
         }
+
+        // nastaví ukazateľe medzi aktívnym prvkem a novým prvkem
+        L->Act->rptr = newElem;
+        newElem->lptr = L->Act;
     }
 }
 
@@ -333,16 +349,20 @@ void DLPreInsert (tDLList *L, int val) {
         return;
     }
 
-    if (L->Act) {
-        L->Act->lptr = newElem;
-        newElem->rptr = L->Act;
+    newElem->data = val;
 
+    if (L->Act) {
         if (L->Act == L->First) {
             L->First = newElem;
         } else {
+            // nový prvek pôjde medzi aktívny prvek a prvek pred aktívnym prvkem
             newElem->lptr = L->Act->lptr;
             L->Act->lptr->rptr = newElem;
         }
+
+        // nastaví ukazateľe medzi aktívnym prvkem a novým prvkem
+        L->Act->lptr = newElem;
+        newElem->rptr = L->Act;
     }
 }
 

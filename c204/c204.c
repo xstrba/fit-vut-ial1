@@ -78,6 +78,7 @@ void untilLeftPar ( tStack* s, char* postExpr, unsigned* postLen ) {
 void doOperation ( tStack* s, char c, char* postExpr, unsigned* postLen ) {
     char sTop;
 
+    // do prázdneho zásobníku rovno volži znak
     if (stackEmpty(s)) {
         stackPush(s, c);
         return;
@@ -85,11 +86,17 @@ void doOperation ( tStack* s, char c, char* postExpr, unsigned* postLen ) {
 
     stackTop(s, &sTop);
 
+    // pokiaľ nie je na vrchole ľavá zátvorka alebo
+    // vkládame násobenie alebo delenie a súǎsne je na vrchole plus alebo mínus
+    // vyberáme znak z vrcholu zásobíku
     while (sTop != '(' && ( (c != '*' && c != '/') || (sTop != '+' && sTop != '-') )) {
+        // vložíme znak z vrcholu zásobníku do výsledného reťazca
         postExpr[*postLen] = sTop;
         *postLen += 1;
+        // odstránime znak zo zásobníku 
         stackPop(s);
 
+        // ak nie je zásobník prázdny, tak pokračujeme
         if (stackEmpty(s)) {
             break;
         } else {
@@ -97,6 +104,7 @@ void doOperation ( tStack* s, char c, char* postExpr, unsigned* postLen ) {
         }
     }
 
+    // vložime nový znak na vrchol zásobníku
     stackPush(s, c);
 }
 
