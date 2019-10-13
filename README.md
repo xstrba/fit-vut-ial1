@@ -3,13 +3,17 @@ Repository with first project to course IAL.
 
 #### All of this commands ur run from root directory of project:
 ##### compile and run basuc tests of all sub-projects:
-```$ make test```
+```
+$ make test
+```
 
 ##### compile and run basic test of specific sub-project:
 `$ make t_c202` or `$ make t_c204` or `$ make t_c206`
 
 ##### compile, run basic tests and compare with basic outputs for all sub-projects:
-```$ make compare```
+```
+$ make compare
+```
 
 ##### compile, run basic test and compare with basic output for specific sub-project:
 `$ make cmp_c202` or `$ make cmp_c204` or `$ make cmp_c206`
